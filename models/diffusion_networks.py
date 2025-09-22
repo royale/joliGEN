@@ -25,7 +25,7 @@ class AutoencoderWrapper(AutoencoderDC):
     # std_mean (tensor(2.3453, device='cuda:0'), tensor(0.2006, device='cuda:0'))
     # min tensor(-9.0943, device='cuda:0')
     # max tensor(8.5529, device='cuda:0')
-    scale = 6  # TODO find better value based on more examples / set it as an option
+    scale = 20  # TODO find better value based on more examples / set it as an option
 
     def encode(self, x):
         x = super().encode(x)
@@ -108,7 +108,7 @@ class LatentWrapper(nn.Module):
         y_latent = self.dc_ae.encode(y_0.float()).latent
         if mask is not None:
             noise_for_mask = torch.randn_like(y_cond)
-            y_cond = y_cond * (1 - mask.float()) + noise_for_mask * mask.float()
+            y_cond = y_cond * (1 - mask.float()) + 0.5 * mask.float()
         x_latent = self.dc_ae.encode(y_cond.float()).latent
         
         downsampled_mask = None
@@ -209,7 +209,7 @@ class LatentWrapper(nn.Module):
         #    y_cond_to_encode = y_cond
         if mask is not None:
             noise_for_mask = torch.randn_like(y_cond)
-            y_cond = y_cond * (1 - mask.float()) + noise_for_mask * mask.float()
+            y_cond = y_cond * (1 - mask.float()) + 0.5 * mask.float()
         y_cond_latent = self.dc_ae.encode(y_cond).latent
         #else:
         #    y_cond_latent = y_cond
